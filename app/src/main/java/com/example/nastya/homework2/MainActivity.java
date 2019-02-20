@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         }
         getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.animator.add, R.animator.delete)
-                .add(R.id.container, DocumentFragment.newInstance(getSupportFragmentManager().getBackStackEntryCount()))
+                .replace(R.id.container, DocumentFragment.newInstance(getSupportFragmentManager().getBackStackEntryCount()))
                 .addToBackStack(null)
                 .commit();
     }
