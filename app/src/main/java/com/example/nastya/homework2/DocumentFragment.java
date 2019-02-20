@@ -32,7 +32,7 @@ public class DocumentFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.document_fragment, container, false);
         TextView addDocument = view.findViewById(R.id.newDocument);
-        addDocument.setText("@string/document" + documentNumber);
+        addDocument.setText("Документ№" + documentNumber);
 
         return view;
     }
