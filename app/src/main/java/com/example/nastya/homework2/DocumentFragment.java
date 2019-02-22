@@ -25,15 +25,19 @@ public class DocumentFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //получаем номер документа
-        documentNumber = getArguments().getInt(ARGUMENT_DOCUMENT_NUMBER)+1;
+        documentNumber = getArguments().getInt(ARGUMENT_DOCUMENT_NUMBER) + 1;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.document_fragment, container, false);
-        TextView addDocument = view.findViewById(R.id.newDocument);
-        addDocument.setText("Документ№" + documentNumber);
+        return inflater.inflate(R.layout.document_fragment, container, false);
+    }
 
-        return view;
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        TextView addDocument = view.findViewById(R.id.newDocument);
+        addDocument.setText(String.format(getString(R.string.document), documentNumber));
+
     }
 }

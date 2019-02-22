@@ -5,27 +5,31 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements FragmentManager.OnBackStackChangedListener {
 
     private static final String BUTTON_IS_ENABLED = "is_enabled";
-    private MenuItem item_delete;
-    private boolean button_enabled = false;
+    private MenuItem itemDelete;
+    private boolean itemDeleteIsEnabled = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getSupportFragmentManager().addOnBackStackChangedListener(this);
+
         if (savedInstanceState != null) {
-            button_enabled = savedInstanceState.getBoolean(BUTTON_IS_ENABLED);
+            itemDeleteIsEnabled = savedInstanceState.getBoolean(BUTTON_IS_ENABLED);
         }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
-        item_delete = menu.findItem(R.id.delete);
-        item_delete.setEnabled(button_enabled);
+        itemDelete = menu.findItem(R.id.delete);
+        itemDelete.setEnabled(itemDeleteIsEnabled);
+
         return true;
     }
 
@@ -45,9 +49,6 @@ public class MainActivity extends AppCompatActivity {
 
     //добавление нового фрагмента
     private void addDocument() {
-        if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
-            item_delete.setEnabled(true);
-        }
         getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.animator.add, R.animator.delete)
                 .replace(R.id.container, DocumentFragment.newInstance(getSupportFragmentManager().getBackStackEntryCount()))
@@ -57,23 +58,23 @@ public class MainActivity extends AppCompatActivity {
 
     //удаление фрагмента
     private void deleteDocument() {
-        if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
-            item_delete.setEnabled(false);
-        }
         getSupportFragmentManager().popBackStack();
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        outState.putBoolean(BUTTON_IS_ENABLED, item_delete.isEnabled());
-        super.onSaveInstanceState(outState);
+    public void onBackStackChanged() {
+        int backStackEntryCount = getSupportFragmentManager().getBackStackEntryCount();
+        if (backStackEntryCount == 1 && !itemDelete.isEnabled()) {
+            itemDelete.setEnabled(true);
+        }
+        if (backStackEntryCount == 0) {
+            itemDelete.setEnabled(false);
+        }
     }
 
     @Override
-    public void onBackPressed() {
-        if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
-            item_delete.setEnabled(false);
-        }
-        super.onBackPressed();
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putBoolean(BUTTON_IS_ENABLED, itemDelete.isEnabled());
+        super.onSaveInstanceState(outState);
     }
 }
